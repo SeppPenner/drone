@@ -4,17 +4,17 @@ import "github.com/drone/drone/pkg/mail"
 
 type Email struct {
 	Recipients []string `yaml:"recipients,omitempty"`
-	Success    string   `yaml:"on_success"`
-	Failure    string   `yaml:"on_failure"`
+	Success    bool     `yaml:"on_success"`
+	Failure    bool     `yaml:"on_failure"`
 }
 
 // Send will send an email, either success or failure,
 // based on the Commit Status.
 func (e *Email) Send(context *Context) error {
 	switch {
-	case context.Commit.Status == "Success" && e.Success != "never":
+	case context.Commit.Status == "Success" && e.Success:
 		return e.sendSuccess(context)
-	case context.Commit.Status == "Failure" && e.Failure != "never":
+	case context.Commit.Status == "Failure" && e.Failure:
 		return e.sendFailure(context)
 	}
 
